@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Trained Models - Personality Predictor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-line me-2"></i>Your Trained Models
+        </h1>
+        <p class="lead">View and compare your trained machine learning models</p>
+    </div>
+</div>
+
+{% if models %}
+<div class="row">
+    {% for model in models %}
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ model.name }}</h5>
+                <span class="badge bg-{% if model.model_type == 'logistic_regression' %}primary{% else %}success{% endif %}">
+                    {{ model.get_model_type_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Accuracy</small>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" style="width: {{ model.accuracy|floatformat:1 }}%">
+                                {{ model.accuracy|floatformat:3 }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">F1 Score</small>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-info" style="width: {{ model.f1_score|floatformat:1 }}%">
+                                {{ model.f1_score|floatformat:3 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Precision</small>
+                        <p class="mb-0"><strong>{{ model.precision|floatformat:3 }}</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Recall</small>
+                        <p class="mb-0"><strong>{{ model.recall|floatformat:3 }}</strong></p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <small class="text-muted">Training Date</small>
+                        <p class="mb-0"><strong>{{ model.training_date|date:"M d, Y H:i" }}</strong></p>
+                    </div>
+                </div>
+                
+                <div class="d-grid">
+                    <a href="{% url 'predict_personality' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-magic me-2"></i>Use for Prediction
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="fas fa-brain fa-3x text-muted mb-3"></i>
+                <h4>No Trained Models</h4>
+                <p class="text-muted">You haven't trained any models yet. Start by uploading data and training your first models.</p>
+                <div class="mt-3">
+                    <a href="{% url 'upload_data' %}" class="btn btn-primary me-2">
+                        <i class="fas fa-upload me-2"></i>Upload Data
+                    </a>
+                    <a href="{% url 'train_models' %}" class="btn btn-success">
+                        <i class="fas fa-cogs me-2"></i>Train Models
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Model Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-chart-line me-2"></i>Logistic Regression</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Fast training time</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Easy to interpret</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Good baseline performance</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-tree me-2"></i>Random Forest</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Higher accuracy</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Feature importance ranking</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Handles complex patterns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

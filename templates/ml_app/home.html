@@ -1,0 +1,1060 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Personality Predictor - AI-Powered Personality Analysis{% endblock %}
+
+{% block content %}
+<!-- Animated Background Particles -->
+<div class="particles-container">
+    <div class="particle particle-1"></div>
+    <div class="particle particle-2"></div>
+    <div class="particle particle-3"></div>
+    <div class="particle particle-4"></div>
+    <div class="particle particle-5"></div>
+    <div class="particle particle-6"></div>
+    <div class="particle particle-7"></div>
+    <div class="particle particle-8"></div>
+    <div class="particle particle-9"></div>
+    <div class="particle particle-10"></div>
+</div>
+
+<!-- Hero Section with 3D Effects -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+    </div>
+    
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-8 mx-auto text-center">
+                <!-- Animated Logo -->
+                <div class="logo-container mb-5">
+                    <div class="logo-circle">
+                        <i class="fas fa-brain logo-icon"></i>
+                    </div>
+                    <div class="logo-rings">
+                        <div class="ring ring-1"></div>
+                        <div class="ring ring-2"></div>
+                        <div class="ring ring-3"></div>
+                    </div>
+                </div>
+                
+                <!-- Main Title with Typing Effect -->
+                <h1 class="hero-title mb-4">
+                    <span class="gradient-text">Personality</span>
+                    <span class="gradient-text-secondary">Predictor</span>
+                </h1>
+                
+                <!-- Animated Subtitle -->
+                <p class="hero-subtitle mb-5">
+                    <span class="typing-text">Discover the power of AI-driven personality analysis</span>
+                </p>
+                
+                <!-- Floating Stats Cards -->
+                <div class="floating-stats mb-5">
+                    <div class="stat-card stat-card-1">
+                        <div class="stat-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ total_records|default:0 }}</h3>
+                            <p>Records</p>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-2">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ trained_models|default:0 }}</h3>
+                            <p>Models</p>
+                        </div>
+                    </div>
+                    <div class="stat-card stat-card-3">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>{{ accuracy|default:"N/A" }}</h3>
+                            <p>Accuracy</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons with Hover Effects -->
+                {% if total_records > 0 and trained_models > 0 %}
+                    <div class="action-buttons">
+                        <a href="{% url 'predict_personality' %}" class="btn btn-primary btn-glow btn-lg">
+                            <i class="fas fa-magic me-2"></i>
+                            <span>Start Prediction</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                        <a href="{% url 'upload_data' %}" class="btn btn-secondary btn-glow btn-lg">
+                            <i class="fas fa-upload me-2"></i>
+                            <span>Upload Data</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                        <button type="button" class="btn btn-danger btn-glow btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-2"></i>
+                            <span>Clear All Data</span>
+                            <div class="btn-glow-effect"></div>
+                        </button>
+                    </div>
+                {% elif total_records > 0 and trained_models == 0 %}
+                    <div class="action-buttons">
+                        <a href="{% url 'train_models' %}" class="btn btn-primary btn-glow btn-lg">
+                            <i class="fas fa-cogs me-2"></i>
+                            <span>Train Models</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                        <a href="{% url 'upload_data' %}" class="btn btn-secondary btn-glow btn-lg">
+                            <i class="fas fa-upload me-2"></i>
+                            <span>Upload Data</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                        <button type="button" class="btn btn-danger btn-glow btn-lg" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-2"></i>
+                            <span>Clear All Data</span>
+                            <div class="btn-glow-effect"></div>
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="action-buttons">
+                        <a href="{% url 'upload_data' %}" class="btn btn-primary btn-glow btn-lg">
+                            <i class="fas fa-upload me-2"></i>
+                            <span>Get Started</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                        <a href="{% url 'about' %}" class="btn btn-secondary btn-glow btn-lg">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <span>Learn More</span>
+                            <div class="btn-glow-effect"></div>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Interactive Process Flow -->
+<section class="process-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title">
+                    <span class="gradient-text">How It</span>
+                    <span class="gradient-text-secondary">Works</span>
+                </h2>
+                <p class="section-subtitle">Simple steps to unlock personality insights</p>
+            </div>
+        </div>
+        
+        <div class="process-flow">
+            <div class="process-step step-1">
+                <div class="step-icon">
+                    <i class="fas fa-upload"></i>
+                        </div>
+                <div class="step-content">
+                    <h4>Upload Data</h4>
+                    <p>Upload your CSV dataset with personality indicators</p>
+                </div>
+                <div class="step-connector"></div>
+            </div>
+            
+            <div class="process-step step-2">
+                <div class="step-icon">
+                    <i class="fas fa-cogs"></i>
+                        </div>
+                <div class="step-content">
+                    <h4>Train Models</h4>
+                    <p>AI models learn patterns from your data</p>
+                </div>
+                <div class="step-connector"></div>
+            </div>
+            
+            <div class="process-step step-3">
+                <div class="step-icon">
+                    <i class="fas fa-magic"></i>
+                        </div>
+                <div class="step-content">
+                    <h4>Get Predictions</h4>
+                    <p>Receive instant personality insights</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Feature Cards with 3D Effects -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title">
+                    <span class="gradient-text">Key</span>
+                    <span class="gradient-text-secondary">Features</span>
+                </h2>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Privacy First</h4>
+                    <p>Your data stays local and secure</p>
+                    <div class="feature-glow"></div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4>Detailed Analytics</h4>
+                    <p>Comprehensive performance metrics</p>
+                    <div class="feature-glow"></div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                </div>
+                    <h4>Multiple Models</h4>
+                    <p>Compare different AI algorithms</p>
+                    <div class="feature-glow"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Status Dashboard -->
+<section class="status-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="section-title">
+                    <span class="gradient-text">System</span>
+                    <span class="gradient-text-secondary">Status</span>
+                </h2>
+            </div>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-item">
+                <div class="status-icon">
+                    <i class="fas fa-database"></i>
+                        </div>
+                <div class="status-info">
+                    <h3>{{ total_records|default:0 }}</h3>
+                    <p>Total Records</p>
+                </div>
+                <div class="status-glow"></div>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon">
+                    <i class="fas fa-brain"></i>
+                        </div>
+                <div class="status-info">
+                    <h3>{{ trained_models|default:0 }}</h3>
+                    <p>Trained Models</p>
+                </div>
+                <div class="status-glow"></div>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon">
+                    <i class="fas fa-chart-line"></i>
+                        </div>
+                <div class="status-info">
+                    <h3>{{ accuracy|default:"N/A" }}</h3>
+                    <p>Model Accuracy</p>
+                </div>
+                <div class="status-glow"></div>
+            </div>
+            
+            <div class="status-item">
+                <div class="status-icon">
+                    <i class="fas fa-magic"></i>
+                        </div>
+                <div class="status-info">
+                    <h3>{{ predictions_made|default:0 }}</h3>
+                    <p>Predictions Made</p>
+                </div>
+                <div class="status-glow"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                    Clear All Data
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Are you sure you want to clear all data?</strong></p>
+                <p class="text-muted">This will permanently delete:</p>
+                <ul class="text-muted">
+                    <li>All uploaded dataset records</li>
+                    <li>All trained machine learning models</li>
+                    <li>All prediction results</li>
+                    <li>All model files and configurations</li>
+                </ul>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <form method="post" action="{% url 'reset_application' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Clear All Data
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* CRITICAL: Override all base styles with !important */
+* {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+    color: #ffffff !important;
+    line-height: 1.6 !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+}
+
+/* Modal Styling for Dark Theme */
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+.modal-header {
+    background: rgba(26, 26, 46, 0.8) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #ffffff !important;
+}
+
+.modal-title {
+    color: #ffffff !important;
+    font-weight: bold !important;
+}
+
+.modal-body {
+    background: rgba(22, 33, 62, 0.8) !important;
+    color: #ffffff !important;
+}
+
+.modal-body p {
+    color: #ffffff !important;
+}
+
+.modal-body strong {
+    color: #ffffff !important;
+}
+
+.modal-body ul {
+    color: #e2e8f0 !important;
+}
+
+.modal-body li {
+    color: #e2e8f0 !important;
+}
+
+.modal-footer {
+    background: rgba(26, 26, 46, 0.8) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.btn-close {
+    filter: invert(1) !important;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    color: #fbbf24 !important;
+}
+
+.text-muted {
+    color: #e2e8f0 !important;
+}
+
+/* Override Bootstrap container */
+.container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 15px !important;
+}
+
+/* Override Bootstrap row */
+.row {
+    margin: 0 !important;
+}
+
+/* Override Bootstrap col */
+.col-lg-8, .col-12, .col-md-4 {
+    padding: 0 15px !important;
+}
+
+/* Animated Background Particles */
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(45deg, #6366f1, #10b981);
+    border-radius: 50%;
+    animation: float-particle 20s infinite linear;
+}
+
+.particle-1 { left: 10%; animation-delay: 0s; }
+.particle-2 { left: 20%; animation-delay: 2s; }
+.particle-3 { left: 30%; animation-delay: 4s; }
+.particle-4 { left: 40%; animation-delay: 6s; }
+.particle-5 { left: 50%; animation-delay: 8s; }
+.particle-6 { left: 60%; animation-delay: 10s; }
+.particle-7 { left: 70%; animation-delay: 12s; }
+.particle-8 { left: 80%; animation-delay: 14s; }
+.particle-9 { left: 90%; animation-delay: 16s; }
+.particle-10 { left: 95%; animation-delay: 18s; }
+
+@keyframes float-particle {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative !important;
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%) !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.3;
+    animation: float-orb 8s ease-in-out infinite;
+}
+
+.orb-1 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(45deg, #6366f1, #8b5cf6);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #10b981, #06b6d4);
+    top: 60%;
+    right: 20%;
+    animation-delay: 2s;
+}
+
+.orb-3 {
+    width: 250px;
+    height: 250px;
+    background: linear-gradient(45deg, #f59e0b, #ef4444);
+    bottom: 20%;
+    left: 30%;
+    animation-delay: 4s;
+}
+
+@keyframes float-orb {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-30px) scale(1.1); }
+}
+
+/* Logo Animation */
+.logo-container {
+    position: relative;
+    display: inline-block;
+}
+
+.logo-circle {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    animation: pulse-logo 3s ease-in-out infinite;
+}
+
+.logo-icon {
+    font-size: 3rem;
+    color: white;
+    animation: rotate-logo 10s linear infinite;
+}
+
+.logo-rings {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ring {
+    position: absolute;
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    animation: expand-ring 3s ease-in-out infinite;
+}
+
+.ring-1 {
+    width: 140px;
+    height: 140px;
+    animation-delay: 0s;
+}
+
+.ring-2 {
+    width: 160px;
+    height: 160px;
+    animation-delay: 1s;
+}
+
+.ring-3 {
+    width: 180px;
+    height: 180px;
+    animation-delay: 2s;
+}
+
+@keyframes pulse-logo {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes rotate-logo {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes expand-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* Hero Title */
+.hero-title {
+    font-size: 4rem !important;
+    font-weight: 900 !important;
+    margin-bottom: 2rem !important;
+    position: relative !important;
+    z-index: 10 !important;
+    color: #ffffff !important;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.gradient-text-secondary {
+    background: linear-gradient(135deg, #10b981, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem !important;
+    color: #e2e8f0 !important;
+    margin-bottom: 3rem !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* Typing Effect */
+.typing-text {
+    border-right: 3px solid #6366f1;
+    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #6366f1; }
+}
+
+/* Floating Stats */
+.floating-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 10;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 1.5rem !important;
+    text-align: center !important;
+    animation: float-stat 4s ease-in-out infinite !important;
+    transition: all 0.3s ease !important;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+}
+
+.stat-card-1 { animation-delay: 0s; }
+.stat-card-2 { animation-delay: 1s; }
+.stat-card-3 { animation-delay: 2s; }
+
+@keyframes float-stat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.stat-icon {
+    font-size: 2rem;
+    color: #6366f1;
+    margin-bottom: 1rem;
+}
+
+.stat-content h3 {
+    font-size: 2rem !important;
+    font-weight: bold !important;
+    color: white !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.stat-content p {
+    color: #e2e8f0 !important;
+    margin: 0 !important;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+}
+
+.btn-glow {
+    position: relative;
+    overflow: hidden;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.btn-glow:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.4);
+    color: white;
+}
+
+.btn-glow-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-glow:hover .btn-glow-effect {
+    left: 100%;
+}
+
+/* Process Flow */
+.process-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    position: relative;
+    z-index: 5;
+}
+
+.section-title {
+    font-size: 3rem !important;
+    font-weight: 900 !important;
+    margin-bottom: 1rem !important;
+    color: #ffffff !important;
+}
+
+.section-subtitle {
+    font-size: 1.2rem !important;
+    color: #e2e8f0 !important;
+}
+
+.process-flow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    margin-top: 4rem;
+}
+
+.process-step {
+    text-align: center;
+    position: relative;
+}
+
+.step-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+    animation: pulse-step 2s ease-in-out infinite;
+}
+
+@keyframes pulse-step {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.step-content h4 {
+    color: white !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.step-content p {
+    color: #e2e8f0 !important;
+}
+
+.step-connector {
+    position: absolute;
+    top: 50px;
+    right: -1.5rem;
+    width: 3rem;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+/* Features Section */
+.features-section {
+    background: linear-gradient(135deg, #16213e 0%, #0f0f23 100%);
+    position: relative;
+    z-index: 5;
+}
+
+.feature-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-card h4 {
+    color: white !important;
+    font-weight: 600 !important;
+    margin-bottom: 1rem !important;
+}
+
+.feature-card p {
+    color: #e2e8f0 !important;
+}
+
+.feature-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.feature-card:hover .feature-glow {
+    opacity: 1;
+}
+
+/* Status Section */
+.status-section {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    position: relative;
+    z-index: 5;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.status-item {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    position: relative !important;
+    overflow: hidden !important;
+    transition: all 0.3s ease !important;
+}
+
+.status-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
+}
+
+.status-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+}
+
+.status-info h3 {
+    font-size: 2.5rem !important;
+    font-weight: bold !important;
+    color: white !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.status-info p {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+}
+
+.status-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.status-item:hover .status-glow {
+    opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+}
+
+    .floating-stats {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .process-flow {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .step-connector {
+        display: none;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Force CSS application */
+body {
+    opacity: 1 !important;
+}
+
+/* Ensure all elements are visible */
+.hero-section, .process-section, .features-section, .status-section {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Force backdrop-filter support */
+.stat-card, .feature-card, .status-item {
+    -webkit-backdrop-filter: blur(10px) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Ensure all text is visible on dark theme */
+h1, h2, h3, h4, h5, h6, p, span, div {
+    color: #ffffff !important;
+}
+
+/* Specific text color overrides */
+.text-muted {
+    color: #e2e8f0 !important;
+}
+
+.text-secondary {
+    color: #cccccc !important;
+}
+
+/* Ensure buttons are visible */
+.btn {
+    color: #ffffff !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #10b981, #06b6d4) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Force overflow hidden
+    document.body.style.overflowX = 'hidden';
+    
+    // Force all animations to restart
+    const animatedElements = document.querySelectorAll('.particle, .gradient-orb, .logo-circle, .stat-card, .step-icon');
+    animatedElements.forEach(el => {
+        el.style.animation = 'none';
+        el.offsetHeight; // Trigger reflow
+        el.style.animation = null;
+    });
+    
+    // Ensure particles are visible
+    const particles = document.querySelectorAll('.particle');
+    particles.forEach(particle => {
+        particle.style.opacity = '1';
+        particle.style.visibility = 'visible';
+    });
+});
+</script>
+{% endblock %} 

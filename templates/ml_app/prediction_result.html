@@ -1,0 +1,766 @@
+{% extends 'base.html' %}
+
+{% block title %}Prediction Result - Personality Predictor{% endblock %}
+
+{% block content %}
+<!-- Confetti Container -->
+<div class="confetti-container" id="confetti-container"></div>
+
+<!-- Poppers Container -->
+<div class="poppers-container" id="poppers-container"></div>
+
+<!-- Sparkles Container -->
+<div class="sparkles-container" id="sparkles-container"></div>
+
+<!-- Fireworks Container -->
+<div class="fireworks-container" id="fireworks-container"></div>
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-pie me-2"></i>Prediction Result
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Main Result Card -->
+        <div class="card mb-4 celebration-card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-check me-2"></i>Your Personality Prediction
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <!-- Enhanced Celebration Section -->
+                <div class="celebration-section text-center mb-4">
+                    
+                    <!-- Floating Emojis (One-time celebration) -->
+                    <div class="floating-emojis" id="celebration-emojis">
+                        <span class="floating-emoji" style="--delay: 0s">🎉</span>
+                        <span class="floating-emoji" style="--delay: 1s">🎊</span>
+                        <span class="floating-emoji" style="--delay: 2s">🎈</span>
+                        <span class="floating-emoji" style="--delay: 3s">✨</span>
+                        <span class="floating-emoji" style="--delay: 4s">🌟</span>
+                        <span class="floating-emoji" style="--delay: 5s">💫</span>
+                        <span class="floating-emoji" style="--delay: 6s">🎆</span>
+                        <span class="floating-emoji" style="--delay: 7s">🎇</span>
+                    </div>
+                    
+                    <div class="celebration-header mb-4">
+                        <h1 class="celebration-title">
+                            CONGRATULATIONS! 🎊
+                        </h1>
+                    </div>
+                    
+
+                    
+                    <div class="prediction-result">
+                        <h2 class="prediction-title mb-3">
+                            {% if prediction == 'Extrovert' %}
+                                <i class="fas fa-users text-success me-3"></i>
+                                <span class="text-success">{{ prediction }}</span>
+                            {% else %}
+                                <i class="fas fa-user text-info me-3"></i>
+                                <span class="text-info">{{ prediction }}</span>
+                            {% endif %}
+                        </h2>
+                        <p class="prediction-subtitle mb-3">
+                            <i class="fas fa-trophy me-2"></i>
+                            Your personality prediction is ready! 🏆
+                        </p>
+                        <div class="confidence-display">
+                            <i class="fas fa-star me-2"></i>
+                            Confidence Level: <strong>{{ confidence|floatformat:1 }}%</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="prediction-result mb-3">
+                            <h2 class="text-{% if prediction == 'Introvert' %}primary{% else %}success{% endif %}">
+                                {{ prediction }}
+                            </h2>
+                            <p class="text-muted">Predicted Personality Type</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="confidence-meter mb-3">
+                            <h4>{{ confidence|floatformat:1 }}%</h4>
+                            <p class="text-muted">Confidence Level</p>
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-{% if confidence > 80 %}success{% elif confidence > 60 %}warning{% else %}danger{% endif %}" 
+                                     style="width: {{ confidence }}%">
+                                    {{ confidence|floatformat:1 }}%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Personality Description -->
+                <div class="mt-4">
+                    {% if prediction == 'Introvert' %}
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-user-secret me-2"></i>Introvert Characteristics:</h6>
+                            <ul class="mb-0">
+                                <li>Gains energy from alone time</li>
+                                <li>Prefers deep, meaningful conversations</li>
+                                <li>Thinks before speaking</li>
+                                <li>Enjoys solitary activities</li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-users me-2"></i>Extrovert Characteristics:</h6>
+                            <ul class="mb-0">
+                                <li>Gains energy from social interactions</li>
+                                <li>Enjoys being the center of attention</li>
+                                <li>Thinks out loud</li>
+                                <li>Loves group activities</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Model Information -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-cogs me-2"></i>Model Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Model Used:</strong> {{ model.name }}</p>
+                        <p><strong>Model Type:</strong> {{ model.get_model_type_display }}</p>
+                        <p><strong>Model Accuracy:</strong> {{ model.accuracy|floatformat:3 }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Training Date:</strong> {{ model.training_date|date:"M d, Y" }}</p>
+                        <p><strong>Prediction Date:</strong> {% now "M d, Y H:i" %}</p>
+                        <p><strong>Input Features:</strong> 7 behavioral traits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Input Summary -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-list me-2"></i>Your Input Summary
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Time Alone</small>
+                        <p class="mb-2"><strong>{{ input_features.time_spent_alone }} hours/day</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Stage Fear</small>
+                        <p class="mb-2"><strong>{{ input_features.stage_fear }}</strong></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Social Energy</small>
+                        <p class="mb-2"><strong>{{ input_features.social_energy }}</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Group Activities</small>
+                        <p class="mb-2"><strong>{{ input_features.group_activities }}</strong></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <small class="text-muted">Small Talk</small>
+                        <p class="mb-2"><strong>{{ input_features.small_talk }}</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Deep Conversations</small>
+                        <p class="mb-2"><strong>{{ input_features.deep_conversations }}</strong></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <small class="text-muted">Decision Making</small>
+                        <p class="mb-0"><strong>{{ input_features.decision_making }}</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-arrow-right me-2"></i>What's Next?
+                </h5>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'predict_personality' %}" class="btn btn-primary w-100 mb-2">
+                    <i class="fas fa-magic me-2"></i>Test Another Person
+                    </a>
+                <a href="{% url 'bulk_test' %}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-users me-2"></i>Bulk Testing
+                    </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary w-100">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div class="popup-overlay" id="success-popup">
+    <div class="popup-content">
+        <div class="popup-icon">🎉</div>
+        <h3 class="popup-title">Prediction Complete!</h3>
+        <p class="popup-message">Your personality has been successfully analyzed!</p>
+        <div class="popup-buttons">
+            <button class="btn btn-primary" onclick="closePopup()">Continue</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced Animation Functions
+function createConfetti() {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+    
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        container.appendChild(confetti);
+    }
+}
+
+function createPoppers() {
+    const container = document.getElementById('poppers-container');
+    const popperColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'];
+    
+    for (let i = 0; i < 8; i++) {
+        const popper = document.createElement('div');
+        popper.className = 'popper-effect';
+        popper.style.left = (10 + i * 10) + '%';
+        popper.style.animationDelay = (i * 0.5) + 's';
+        
+        // Create popper particles
+        for (let j = 0; j < 15; j++) {
+            const particle = document.createElement('div');
+            particle.className = 'popper-particle';
+            particle.style.backgroundColor = popperColors[Math.floor(Math.random() * popperColors.length)];
+            particle.style.animationDelay = (Math.random() * 0.5) + 's';
+            popper.appendChild(particle);
+        }
+        
+        container.appendChild(popper);
+    }
+}
+
+function createSparkles() {
+    const container = document.getElementById('sparkles-container');
+    
+    for (let i = 0; i < 20; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 2 + 's';
+        container.appendChild(sparkle);
+    }
+}
+
+function createConfettiBurst() {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        container.appendChild(confetti);
+        
+        // Remove confetti after animation
+        setTimeout(() => {
+            confetti.remove();
+        }, 3000);
+    }
+}
+
+function createSparklesBurst() {
+    const container = document.getElementById('sparkles-container');
+    
+    for (let i = 0; i < 15; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = Math.random() * 100 + '%';
+        sparkle.style.top = Math.random() * 100 + '%';
+        sparkle.style.animationDelay = Math.random() * 0.5 + 's';
+        container.appendChild(sparkle);
+        
+        // Remove sparkle after animation
+        setTimeout(() => {
+            sparkle.remove();
+        }, 2000);
+    }
+}
+
+function showSuccessPopup() {
+    const popup = document.getElementById('success-popup');
+    popup.style.display = 'flex';
+    
+    setTimeout(() => {
+        popup.style.opacity = '1';
+    }, 100);
+}
+
+function closePopup() {
+    const popup = document.getElementById('success-popup');
+    popup.style.opacity = '0';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 300);
+}
+
+// Initialize one-time celebration effects when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing one-time celebration effects...');
+    
+    // Start one-time celebration effects
+    setTimeout(() => {
+        triggerCelebration();
+    }, 500);
+    
+    // Show success popup after a delay
+    setTimeout(() => {
+        showSuccessPopup();
+    }, 3000);
+});
+
+function triggerCelebration() {
+    // Trigger floating emojis
+    const emojis = document.querySelectorAll('.floating-emoji');
+    emojis.forEach((emoji, index) => {
+        emoji.style.animation = `floatUp 3s ease-out ${index * 0.2}s forwards`;
+    });
+    
+
+    
+    // Create one-time confetti burst
+    createConfettiBurst();
+    
+    // Create one-time sparkles
+    createSparklesBurst();
+}
+
+// Re-trigger animations on scroll
+window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const rate = scrolled * -0.5;
+    
+    // Parallax effect for floating elements
+    document.querySelectorAll('.floating-emoji').forEach(emoji => {
+        emoji.style.transform = `translateY(${rate}px)`;
+    });
+});
+</script>
+
+<style>
+/* Enhanced Celebration Styles */
+.celebration-card {
+    animation: slideInUp 0.8s ease-out;
+}
+
+.celebration-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--text);
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.celebration-section {
+    padding: 20px 0;
+}
+
+.prediction-title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.prediction-subtitle {
+    font-size: 1.5rem;
+    color: #666;
+    font-weight: 600;
+}
+
+.confidence-display {
+    font-size: 1.2rem;
+    color: #888;
+    margin-top: 20px;
+}
+
+/* Floating Emojis */
+.floating-emojis {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-emoji {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0;
+    transform: translateY(100vh);
+}
+
+/* Confetti */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confetti-fall 3s linear forwards;
+}
+
+/* Poppers */
+.poppers-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.popper-effect {
+    position: absolute;
+    bottom: 20%;
+    width: 60px;
+    height: 60px;
+    animation: popper-explode 2s ease-out forwards;
+}
+
+.popper-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    animation: particle-spread 1.5s ease-out forwards;
+}
+
+/* Sparkles */
+.sparkles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 998;
+}
+
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #FFD700;
+    border-radius: 50%;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+/* Fireworks */
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 997;
+}
+
+.firework {
+    position: absolute;
+    bottom: 20%;
+    width: 4px;
+    height: 4px;
+    background: #FF6B6B;
+    border-radius: 50%;
+    animation: firework-launch 3s ease-out forwards;
+}
+
+.firework-particle {
+    position: absolute;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to top, #FF6B6B, transparent);
+    transform-origin: 50% 100%;
+    animation: firework-explode 2s ease-out forwards;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    to {
+        text-shadow: 2px 2px 20px rgba(255, 107, 107, 0.5);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+}
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@keyframes popper-explode {
+    0% {
+        transform: scale(0);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes particle-spread {
+    0% {
+        transform: translateY(0) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+    }
+}
+
+@keyframes sparkle {
+    0%, 100% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+@keyframes firework-launch {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-50vh);
+    }
+    100% {
+        transform: translateY(-50vh);
+    }
+}
+
+@keyframes firework-explode {
+    0% {
+        transform: translateY(0) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+}
+}
+
+/* Popup Styles */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.popup-content {
+    background: var(--surface);
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    animation: popupSlideIn 0.5s ease-out;
+}
+
+.popup-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: popupBounce 1s ease-out;
+}
+
+.popup-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.popup-message {
+    margin-bottom: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+@keyframes popupSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popupBounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .celebration-title {
+    font-size: 2rem;
+}
+
+    .prediction-title {
+        font-size: 2.5rem;
+}
+
+    .floating-emoji {
+    font-size: 1.5rem;
+}
+}
+</style>
+{% endblock %} 

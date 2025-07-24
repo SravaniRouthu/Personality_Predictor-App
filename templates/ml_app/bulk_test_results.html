@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulk Test Results - PersonalityAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Bulk Test Results
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Summary Statistics -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-primary fw-bold">{{ bulk_results.total_predictions }}</h4>
+                                <small class="text-muted">Total Predictions</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-success fw-bold">{{ bulk_results.introvert_count }}</h4>
+                                <small class="text-muted">Introverts</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-info fw-bold">{{ bulk_results.extrovert_count }}</h4>
+                                <small class="text-muted">Extroverts</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <h4 class="text-warning fw-bold">{{ bulk_results.avg_confidence|floatformat:1 }}%</h4>
+                                <small class="text-muted">Avg Confidence</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model Used -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-robot me-2"></i>Model Used</h6>
+                        <p class="mb-0"><strong>{{ bulk_results.model_used }}</strong></p>
+                    </div>
+
+                    <!-- Distribution Chart -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>Personality Distribution
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="distribution-chart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Predictions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>Sample Predictions (First 10)
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Prediction</th>
+                                            <th>Confidence</th>
+                                            <th>Introvert Prob</th>
+                                            <th>Extrovert Prob</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for prediction in bulk_results.predictions %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if prediction.prediction == 'Introvert' %}primary{% else %}success{% endif %}">
+                                                    {{ prediction.prediction }}
+                                                </span>
+                                            </td>
+                                            <td>{{ prediction.confidence|floatformat:1 }}%</td>
+                                            <td>{{ prediction.probabilities.0|floatformat:3 }}</td>
+                                            <td>{{ prediction.probabilities.1|floatformat:3 }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <a href="{% url 'bulk_test' %}" class="btn btn-primary">
+                                <i class="fas fa-redo me-2"></i>Run Another Test
+                            </a>
+                            <a href="{% url 'predict_personality' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-user me-2"></i>Individual Testing
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-home me-2"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create distribution chart
+    const introvertCount = {{ bulk_results.introvert_count }};
+    const extrovertCount = {{ bulk_results.extrovert_count }};
+    
+    const data = [
+        {
+            values: [introvertCount, extrovertCount],
+            labels: ['Introvert', 'Extrovert'],
+            type: 'pie',
+            marker: {
+                colors: ['#3b82f6', '#10b981']
+            }
+        }
+    ];
+    
+    const layout = {
+        title: 'Personality Distribution',
+        height: 300,
+        margin: { l: 50, r: 50, t: 50, b: 50 },
+        font: {
+            color: document.body.getAttribute('data-theme') === 'light' ? '#212529' : '#ffffff'
+        },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)'
+    };
+    
+    Plotly.newPlot('distribution-chart', data, layout);
+});
+</script>
+{% endblock %}
+{% endblock %} 

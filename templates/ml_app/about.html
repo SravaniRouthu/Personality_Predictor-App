@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About - Personality Predictor{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="fas fa-brain me-3 icon-gradient"></i>
+                About Personality Predictor
+            </h1>
+            <p class="lead">
+                Advanced AI-powered personality analysis using machine learning
+            </p>
+        </div>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-bullseye me-2"></i>Our Mission
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Personality Predictor is an innovative machine learning application designed to analyze personality traits 
+                        using advanced AI algorithms. Our platform provides accurate predictions based on behavioral patterns 
+                        and psychological indicators.
+                    </p>
+                    <p class="mb-0">
+                        We believe in making AI accessible to everyone, providing insights that help understand personality 
+                        dynamics in a simple, user-friendly interface.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="text-center mb-4">
+                <i class="fas fa-star me-2"></i>Key Features
+            </h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-upload fa-3x icon-gradient mb-3"></i>
+                    <h5>Easy Data Upload</h5>
+                    <p class="text-muted">
+                        Upload your CSV datasets with a simple drag-and-drop interface. 
+                        Our system automatically detects and processes your data.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-cogs fa-3x icon-gradient mb-3"></i>
+                    <h5>Advanced ML Models</h5>
+                    <p class="text-muted">
+                        Train multiple machine learning models including Logistic Regression 
+                        and Random Forest with automatic hyperparameter tuning.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-bar fa-3x icon-gradient mb-3"></i>
+                    <h5>Data Visualization</h5>
+                    <p class="text-muted">
+                        Explore your data with interactive visualizations and 
+                        comprehensive analytics to understand patterns.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technology Stack -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-code me-2"></i>Technology Stack
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary">Backend</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Django 4.2.7</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Python 3.13</li>
+                                <li><i class="fas fa-check text-success me-2"></i>SQLite Database</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Scikit-learn</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary">Frontend</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Bootstrap 5.3</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Font Awesome Icons</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Modern CSS</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Responsive Design</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy & Security -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>Privacy & Security
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Your data security is our priority:</strong>
+                    </div>
+                    <ul class="mb-0">
+                        <li>All data is processed locally on your server</li>
+                        <li>No data is shared with third parties</li>
+                        <li>Advanced encryption for data storage</li>
+                        <li>Automatic data cleanup after processing</li>
+                        <li>Compliant with data protection standards</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer CTA -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Ready to Get Started?</h4>
+                    <p class="mb-4">Upload your dataset and start predicting personalities today!</p>
+                    <a href="{% url 'upload_data' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-upload me-2"></i>Upload Data
+                    </a>
+                    <a href="{% url 'home' %}" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.tech-stack {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.tech-item {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.tech-item .badge {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.feature-card {
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    height: 100%;
+    transition: all 0.3s;
+}
+
+.feature-card:hover {
+    border-color: #007bff;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.workflow-step {
+    padding: 1rem;
+}
+
+.workflow-step .step-number {
+    width: 50px;
+    height: 50px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.personality-card {
+    padding: 1.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.personality-card.introvert {
+    border-left: 4px solid #007bff;
+}
+
+.personality-card.extrovert {
+    border-left: 4px solid #28a745;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-bottom: none;
+}
+</style>
+{% endblock %} 

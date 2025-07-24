@@ -1,0 +1,361 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Predict Personality - Personality Predictor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-magic me-2"></i>Personality Prediction
+        </h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Enter Your Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Model Selection -->
+                    <div class="mb-4">
+                        <label for="model_id" class="form-label">
+                            <i class="fas fa-brain me-2"></i>Select Model
+                        </label>
+                        <select name="model_id" id="model_id" class="form-control" required>
+                            <option value="">Choose a model...</option>
+                            {% for model in models %}
+                                <option value="{{ model.id }}">
+                                    {{ model.name }} (Accuracy: {{ model.accuracy|floatformat:3 }})
+                                </option>
+                            {% empty %}
+                                <option value="" disabled>No models available</option>
+                            {% endfor %}
+                        </select>
+                        {% if not models %}
+                            <div class="alert alert-warning mt-2">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                No trained models available. Please train models first.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Feature Inputs -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_time_spent_alone" class="form-label">
+                                    Time Spent Alone (hours/day)
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="How many hours per day you typically spend alone"></i>
+                                </label>
+                                <input type="number" name="feature_time_spent_alone" id="feature_time_spent_alone" class="form-control" value="0" min="0" max="24" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_stage_fear" class="form-label">
+                                    Stage Fear
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="Do you feel afraid or anxious when speaking in front of a group?"></i>
+                                </label>
+                                <select name="feature_stage_fear" id="feature_stage_fear" class="form-control" required>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_social_event_attendance" class="form-label">
+                                    Social Event Attendance (times/month)
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="How many social events (parties, gatherings, etc.) do you attend per month?"></i>
+                                </label>
+                                <input type="number" name="feature_social_event_attendance" id="feature_social_event_attendance" class="form-control" value="0" min="0" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_going_outside" class="form-label">
+                                    Going Outside (times/week)
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="How many times per week do you go outside for social activities?"></i>
+                                </label>
+                                <input type="number" name="feature_going_outside" id="feature_going_outside" class="form-control" value="0" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_drained_after_socializing" class="form-label">
+                                    Drained After Socializing
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="Do you feel tired or exhausted after social interactions?"></i>
+                                </label>
+                                <select name="feature_drained_after_socializing" id="feature_drained_after_socializing" class="form-control" required>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_friends_circle_size" class="form-label">
+                                    Friends Circle Size
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="How many close friends do you have?"></i>
+                                </label>
+                                <input type="number" name="feature_friends_circle_size" id="feature_friends_circle_size" class="form-control" value="0" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="feature_post_frequency" class="form-label">
+                                    Post Frequency (times/week)
+                                    <i class="fas fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="How often do you post on social media (Facebook, Instagram, Twitter, etc.) per week?"></i>
+                                </label>
+                                <input type="number" name="feature_post_frequency" id="feature_post_frequency" class="form-control" value="0" min="0" required>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    <strong>Post Frequency:</strong> How often you share content on social media platforms. 
+                                    Higher frequency often indicates extroverted tendencies, while lower frequency may suggest introverted preferences.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-magic me-2"></i>Predict Personality
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Section -->
+    {% if prediction %}
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Prediction Results
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Celebration Section -->
+                <div class="celebration-section text-center mb-4" style="border: 2px solid red; background: yellow;">
+                    <div class="balloons">
+                        <span class="balloon balloon-1">🎈</span>
+                        <span class="balloon balloon-2">🎉</span>
+                        <span class="balloon balloon-3">🎊</span>
+                        <span class="balloon balloon-4">🎈</span>
+                        <span class="balloon balloon-5">🎉</span>
+                        <span class="balloon balloon-6">🎊</span>
+                    </div>
+                    
+                    <div class="prediction-result">
+                        <h2 class="prediction-title mb-2">
+                            {% if prediction == 'Extrovert' %}
+                                <i class="fas fa-users text-success me-2"></i>
+                                <span class="text-success">Extrovert</span>
+                            {% else %}
+                                <i class="fas fa-user text-info me-2"></i>
+                                <span class="text-info">Introvert</span>
+                            {% endif %}
+                        </h2>
+                        <p class="prediction-subtitle mb-3">
+                            <i class="fas fa-trophy me-2"></i>
+                            Your personality prediction is ready!
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="text-center mb-4">
+                    <div class="progress mb-3">
+                        <div class="progress-bar" role="progressbar" style="width: {{ confidence|floatformat:1 }}%" 
+                             aria-valuenow="{{ confidence|floatformat:1 }}" aria-valuemin="0" aria-valuemax="100">
+                            {{ confidence|floatformat:1 }}%
+                        </div>
+                    </div>
+                    <p class="text-muted">Confidence Level</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-info-circle me-2"></i>Explanation</h6>
+                    <p class="text-muted">{{ explanation }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-star me-2"></i>Great Qualities</h6>
+                    <p class="text-muted">{{ qualities }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-cog me-2"></i>Model Used</h6>
+                    <p class="text-muted">{{ selected_model.name }} ({{ selected_model.model_type }})</p>
+                </div>
+                
+                {% if probabilities %}
+                <div class="mb-3">
+                    <h6><i class="fas fa-chart-bar me-2"></i>Probabilities</h6>
+                    <ul class="list-unstyled">
+                        {% for personality, prob in probabilities.items %}
+                        <li class="d-flex justify-content-between">
+                            <span>{{ personality }}</span>
+                            <span class="badge bg-secondary">{{ prob|floatformat:3 }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Instructions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>How to Use
+                </h5>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li><strong>Select a Model:</strong> Choose from your trained models (Logistic Regression or Random Forest)</li>
+                    <li><strong>Enter Your Information:</strong> Fill in the form with your personal characteristics</li>
+                    <li><strong>Get Prediction:</strong> Click "Predict Personality" to see your result</li>
+                    <li><strong>Understand Results:</strong> Read the explanation and qualities associated with your personality type</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
+<style>
+/* Celebration Effects */
+.celebration-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.balloons {
+    position: relative;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+.balloon {
+    position: absolute;
+    font-size: 28px;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.balloon-1 { left: 5%; animation-delay: 0s; }
+.balloon-2 { left: 20%; animation-delay: 0.5s; }
+.balloon-3 { left: 40%; animation-delay: 1s; }
+.balloon-4 { left: 60%; animation-delay: 1.5s; }
+.balloon-5 { left: 80%; animation-delay: 2s; }
+.balloon-6 { left: 95%; animation-delay: 2.5s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-15px) rotate(2deg); }
+    50% { transform: translateY(-20px) rotate(0deg); }
+    75% { transform: translateY(-15px) rotate(-2deg); }
+}
+
+.prediction-result {
+    position: relative;
+    z-index: 2;
+}
+
+.prediction-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.prediction-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .celebration-section {
+    background: linear-gradient(135deg, #343a40 0%, #495057 100%);
+}
+
+[data-theme="dark"] .prediction-subtitle {
+    color: #adb5bd;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .prediction-title {
+        font-size: 2rem;
+    }
+    
+    .balloon {
+        font-size: 24px;
+    }
+    
+    .balloons {
+        height: 60px;
+    }
+}
+</style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Add celebration effect when prediction is shown
+    if (document.querySelector('.celebration-section')) {
+        // Add entrance animation
+        const celebrationSection = document.querySelector('.celebration-section');
+        celebrationSection.style.opacity = '0';
+        celebrationSection.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            celebrationSection.style.transition = 'all 0.8s ease-out';
+            celebrationSection.style.opacity = '1';
+            celebrationSection.style.transform = 'translateY(0)';
+        }, 300);
+    }
+});
+</script>
+{% endblock %} 

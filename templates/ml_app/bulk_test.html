@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Bulk Testing - PersonalityAI{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card" data-aos="fade-up">
+                <div class="card-header text-center">
+                    <h3 class="mb-0">
+                        <i class="fas fa-file-csv me-2"></i>
+                        Bulk Testing
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Instructions -->
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle me-2"></i>How to Use Bulk Testing</h6>
+                        <ul class="mb-0">
+                            <li>Upload a CSV file with the same features as your training data</li>
+                            <li>The file should have columns like: Time_spent_Alone, Stage_fear, etc.</li>
+                            <li>Each row represents one person to be tested</li>
+                            <li>Results will show predictions for all individuals</li>
+                        </ul>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="test_csv" class="form-label">
+                                <i class="fas fa-upload me-2"></i>Select CSV File
+                            </label>
+                            <input type="file" class="form-control" id="test_csv" name="test_csv" accept=".csv" required>
+                            <div class="form-text">
+                                Choose a CSV file with personality test data (same format as training data)
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fas fa-robot me-2"></i>Available Models
+                            </label>
+                            <div class="card">
+                                <div class="card-body">
+                                    {% if trained_models %}
+                                        {% for model in trained_models %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="model_id" 
+                                                   id="model_{{ model.id }}" value="{{ model.id }}" 
+                                                   {% if forloop.first %}checked{% endif %}>
+                                            <label class="form-check-label" for="model_{{ model.id }}">
+                                                <strong>{{ model.name }}</strong>
+                                                <span class="badge bg-primary ms-2">{{ model.accuracy|floatformat:1 }}% accuracy</span>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            No trained models available. Please train models first.
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg" {% if not trained_models %}disabled{% endif %}>
+                                <i class="fas fa-play me-2"></i>Start Bulk Testing
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Sample Format -->
+                    <div class="mt-5">
+                        <h5><i class="fas fa-table me-2"></i>Expected CSV Format</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Time_spent_Alone</th>
+                                        <th>Stage_fear</th>
+                                        <th>Social_event_attendance</th>
+                                        <th>Going_outside</th>
+                                        <th>Drained_after_socializing</th>
+                                        <th>Friends_circle_size</th>
+                                        <th>Post_frequency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>5</td>
+                                        <td>Yes</td>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>Yes</td>
+                                        <td>2</td>
+                                        <td>3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>No</td>
+                                        <td>8</td>
+                                        <td>7</td>
+                                        <td>No</td>
+                                        <td>6</td>
+                                        <td>8</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Values should match your training data format
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
